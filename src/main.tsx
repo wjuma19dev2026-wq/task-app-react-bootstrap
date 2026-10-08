@@ -4,7 +4,7 @@ import { TaskApp } from "./TaskApp";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
-import "@popperjs/core/";
+import "bootstrap-icons/font/bootstrap-icons.min.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -1,12 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Hi+Melody&display=swap");
-
-.hi-melody-regular {
-  font-family: "Hi Melody", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+#tarea-card {
+  height: 350px;
 }
 
-body {
-  font-family: "Hi Melody", sans-serif !important;
-  font-size: 1.6rem !important;
+#no-hay-tarea {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
+
+.ml-2 {
+  margin-left: 0.8rem;
+}
+
+/* p,
+h1,
+h3 {
+  margin: 0 !important;
+  padding: 0 !important;
+} */
