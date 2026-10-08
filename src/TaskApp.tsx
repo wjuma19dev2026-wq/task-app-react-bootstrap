@@ -1,52 +1,45 @@
-import { useState, type ChangeEvent, type ChangeEventHandler } from 'react'
+import { useReducer, useState, type ChangeEvent } from 'react'
 import './TaskApp.css'
-
-interface Todo {
-  id: string
-  title: string
-  completed: boolean
-}
+import { getTaskInitialState, taskReducer } from './reducers/taskReducer'
 
 export const TaskApp = () => {
-  const [todos, setTodos] = useState<Todo[]>([])
   const [inputValue, setInputValue] = useState('')
+
+  const [state, dispatch] = useReducer(taskReducer, getTaskInitialState())
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
   }
 
   const handleAddTodo = () => {
-    const newTodo: Todo = {
-      id: Date.now().toString(),
-      title: inputValue,
-      completed: false,
-    }
-    setTodos([...todos, newTodo])
+    if (inputValue === '') return
+    dispatch({ type: 'ADD_TODO', payload: inputValue })
   }
 
   const handleToggleTodo = (id: string) => {
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          completed: !todo.completed,
-        }
-      }
-
-      return todo
-    })
-    setTodos(updatedTodos)
+    dispatch({ type: 'TOGGLE_TODO', payload: id })
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === 'Enter') {
+      handleAddTodo()
+    }
+  }
+
+  const todos = state.todos
   const completedTodos: number = todos.filter(t => t.completed === true).length
   const todosLength: number = todos.length
+  const progressPercentage: number =
+    todosLength === 0 ? 0 : (completedTodos / todosLength) * 100
 
   return (
     <div className="container">
       <div className="row">
         <div className="col-12 mt-5 d-flex flex-column align-items-center">
-          <h1 className="m-0">Lista de tareas</h1>
-          <p>Manten tus tareas organizadas y consigue hacerla</p>
+          <h1 className="m-0 fs-1 text-light fw-bold">Lista de tareas</h1>
+          <p className="text-light">
+            Manten tus tareas organizadas y consigue hacerla
+          </p>
         </div>
 
         <div className="col-12">
@@ -59,6 +52,7 @@ export const TaskApp = () => {
                   className="form-control"
                   value={inputValue}
                   onChange={handleChange}
+                  onKeyDown={handleKeyPress}
                 />
                 <div onClick={handleAddTodo} className="btn btn-dark ml-2">
                   +
@@ -76,15 +70,13 @@ export const TaskApp = () => {
                 <p className="m-0">
                   {completedTodos} de {todosLength} completadas
                 </p>
-                <p className="m-0 fw-bold">
-                  {Number((completedTodos / todosLength) * 100).toFixed()}%
-                </p>
+                <p className="m-0 fw-bold">{progressPercentage.toFixed()}%</p>
               </div>
               <div className="progress">
                 <div
                   className="progress-bar bg-dark"
                   role="progressbar"
-                  style={{ width: (completedTodos / todosLength) * 100 + '%' }}
+                  style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
             </div>
@@ -102,7 +94,7 @@ export const TaskApp = () => {
                 <section id="todos">
                   {todos.map(todo => (
                     <div key={todo.id} className="card mt-2">
-                      <div className="card-body">
+                      <div className="card-body bg-light">
                         <div className="form-check">
                           <input
                             className="form-check-input"
@@ -112,7 +104,7 @@ export const TaskApp = () => {
                             onChange={() => handleToggleTodo(todo.id)}
                           />
                           <label
-                            className={`form-check-label ${todo.completed ? 'text-decoration-line-through text-danger' : ''}`}
+                            className={`form-check-label ${todo.completed ? 'text-decoration-line-through text-success' : ''}`}
                           >
                             {todo.title}
                           </label>

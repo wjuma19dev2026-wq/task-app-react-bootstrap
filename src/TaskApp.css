@@ -1,3 +1,10 @@
+body {
+  /* background: linear-gradient(to top left, #f9f0e0, #ffb6a6); */
+  /* background: linear-gradient(to top right, #f582ae, #8bd3dd); */
+  height: 100vh;
+  background: linear-gradient(to bottom right, #0d47a1, #2196f3);
+}
+
 #tarea-card {
   height: 350px;
 }
@@ -12,6 +19,17 @@
 
 .ml-2 {
   margin-left: 0.8rem;
+}
+
+.card,
+.card-body,
+.card-header {
+  background-color: #90caf9 !important;
+}
+
+.card-no-border {
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 /* p,
