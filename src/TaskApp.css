@@ -1,0 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Hi+Melody&display=swap");
+
+.hi-melody-regular {
+  font-family: "Hi Melody", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: "Hi Melody", sans-serif !important;
+  font-size: 1.6rem !important;
+}
