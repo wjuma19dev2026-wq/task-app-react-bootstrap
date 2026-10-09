@@ -1,3 +1,18 @@
+import { z } from 'zod'
+
+const TodoSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  completed: z.boolean(),
+})
+
+const TaskStateSchema = z.object({
+  todos: z.array(TodoSchema),
+  pending: z.number(),
+  completed: z.number(),
+  length: z.number(),
+})
+
 export interface Todo {
   id: string
   title: string
@@ -28,6 +43,20 @@ export const getTaskInitialState = (): TaskState => {
     }
   }
 
+  /**
+   * Validation Local Storage Incoming Data
+   * ! Zod es una librería de validación y tipado para TypeScript y JavaScript. Se usa mucho en proyectos con React, Vite, Next.js, Express, etc., para validar datos de formularios, respuestas de APIs y variables de entorno.
+   */
+  const result = TaskStateSchema.safeParse(JSON.parse(taskLocalStorageState))
+
+  if (result.error) {
+    return {
+      todos: [],
+      length: 0,
+      pending: 0,
+      completed: 0,
+    }
+  }
   return JSON.parse(taskLocalStorageState)
 }
 
