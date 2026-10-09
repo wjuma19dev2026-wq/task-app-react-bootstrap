@@ -22,14 +22,13 @@ body {
 }
 
 .card,
-.card-body,
 .card-header {
   background-color: #90caf9 !important;
 }
 
 .card-no-border {
   border: none !important;
-  border-radius: 0 !important;
+  /* border-radius: 0 !important; */
 }
 
 /* p,

@@ -17,12 +17,18 @@ export type TaskAction =
   | { type: 'DELETE_TODO'; payload: string }
 
 export const getTaskInitialState = (): TaskState => {
-  return {
-    todos: [],
-    length: 0,
-    pending: 0,
-    completed: 0,
+  const taskLocalStorageState = localStorage.getItem('task-state')
+
+  if (!taskLocalStorageState) {
+    return {
+      todos: [],
+      length: 0,
+      pending: 0,
+      completed: 0,
+    }
   }
+
+  return JSON.parse(taskLocalStorageState)
 }
 
 export const taskReducer = (
@@ -40,17 +46,38 @@ export const taskReducer = (
         ...state,
         todos: [...state.todos, newTodo],
         length: state.todos.length + 1,
-        pending: state.todos.map(todo => !todo.completed).length + 1,
+        pending: state.todos.filter(todo => !todo.completed).length + 1,
       }
     }
     case 'TOGGLE_TODO': {
+      const updatedTodos: Todo[] = state.todos.map(todo => {
+        if (todo.id === action.payload) {
+          return {
+            ...todo,
+            completed: !todo.completed,
+          }
+        }
+        return todo
+      })
       return {
         ...state,
+        todos: updatedTodos,
+        pending: updatedTodos.filter(t => !t.completed).length,
+        completed: updatedTodos.filter(t => t.completed).length,
       }
     }
-    // case 'DELETE_TODO': {
-
-    // }
+    case 'DELETE_TODO': {
+      const updatedTodos = state.todos.filter(
+        todo => todo.id !== action.payload
+      )
+      return {
+        ...state,
+        todos: updatedTodos,
+        length: updatedTodos.length,
+        pending: updatedTodos.filter(t => !t.completed).length,
+        completed: updatedTodos.filter(t => t.completed).length,
+      }
+    }
     default: {
       return state
     }

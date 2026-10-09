@@ -1,4 +1,4 @@
-import { useReducer, useState, type ChangeEvent } from 'react'
+import { useEffect, useReducer, useState, type ChangeEvent } from 'react'
 import './TaskApp.css'
 import { getTaskInitialState, taskReducer } from './reducers/taskReducer'
 
@@ -20,14 +20,22 @@ export const TaskApp = () => {
     dispatch({ type: 'TOGGLE_TODO', payload: id })
   }
 
+  const handleDelete = (id: string) => {
+    dispatch({ type: 'DELETE_TODO', payload: id })
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.code === 'Enter') {
       handleAddTodo()
     }
   }
 
+  useEffect(() => {
+    localStorage.setItem('task-state', JSON.stringify(state, null, 2))
+  }, [state])
+
   const todos = state.todos
-  const completedTodos: number = todos.filter(t => t.completed === true).length
+  const completedTodos: number = todos.filter(t => t.completed).length
   const todosLength: number = todos.length
   const progressPercentage: number =
     todosLength === 0 ? 0 : (completedTodos / todosLength) * 100
@@ -54,7 +62,7 @@ export const TaskApp = () => {
                   onChange={handleChange}
                   onKeyDown={handleKeyPress}
                 />
-                <div onClick={handleAddTodo} className="btn btn-dark ml-2">
+                <div onClick={handleAddTodo} className="btn btn-primary ml-2">
                   +
                 </div>
               </div>
@@ -74,7 +82,7 @@ export const TaskApp = () => {
               </div>
               <div className="progress">
                 <div
-                  className="progress-bar bg-dark"
+                  className="progress-bar bg-primary"
                   role="progressbar"
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
@@ -99,7 +107,7 @@ export const TaskApp = () => {
                           <input
                             className="form-check-input"
                             type="checkbox"
-                            id=""
+                            checked={todo.completed}
                             value="option1"
                             onChange={() => handleToggleTodo(todo.id)}
                           />
@@ -108,7 +116,10 @@ export const TaskApp = () => {
                           >
                             {todo.title}
                           </label>
-                          <i className="bi bi-trash float-end"></i>
+                          <i
+                            onClick={() => handleDelete(todo.id)}
+                            className="bi bi-trash float-end"
+                          ></i>
                         </div>
                       </div>
                     </div>
